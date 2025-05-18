@@ -1,14 +1,17 @@
 import json
 import tkinter as tk
 from tkinter import filedialog, messagebox, ttk
+from Crypto.Cipher import AES # pip install pycryptodome
+from Crypto.Protocol.KDF import PBKDF2
 import os
 
 class GameSaveEditor(tk.Tk):
-    def __init__(self):
+    def __init__(self, game_path):
         super().__init__()
+        self.game_path = game_path
 
         style = ttk.Style(self)
-        style.theme_use('clam')  # or 'alt', 'default', 'vista'
+        style.theme_use('xpnative')  # or 'alt', 'default', 'vista', 'clam', 'xpnative'
 
         # Customize notebook tabs
         style.configure('TNotebook.Tab', padding=[10, 5], font=('Segoe UI', 10, 'bold'))
@@ -20,14 +23,6 @@ class GameSaveEditor(tk.Tk):
         self.option_add("*Entry.Relief", "flat")
         
         style.configure("Accent.TButton", foreground="white", background="#1f77b4", font=('Segoe UI', 10, 'bold'))
-
-
-        # --- Header Container ---
-
-        # --- Logo on the Left ---
-        # logo_img = Image.open("logo.png")
-        # logo_img = logo_img.resize((80, 80), Image.ANTIALIAS)
-        # logo_tk = ImageTk.PhotoImage(logo_img)
 
         self.title("Game Save Editor - R.E.P.O.")
         self.geometry("1200x800")
@@ -41,7 +36,6 @@ class GameSaveEditor(tk.Tk):
         
         self.expanded_items = set()
         self.entries = {}
-
 
         self.header_frame = tk.Frame(self, bg='white')
         self.header_frame.pack(fill=tk.X, padx=20, pady=10)
@@ -128,10 +122,6 @@ class GameSaveEditor(tk.Tk):
                 }
 
     def create_header(self):
-        # Remove old header if it exists
-        # if hasattr(self, 'header_frame'):
-        #     self.header_frame.destroy()
-
         # Logo
         try:
             self.logo_tk = tk.PhotoImage(file='logo-small.png')
@@ -278,16 +268,25 @@ class GameSaveEditor(tk.Tk):
         self.create_inventory_tab()
 
     def ask_save_file(self, mode='save'): # mode can be 'save' or 'load'
-        file_path = 'editable.es3'
+        # open the directory self.game_path
         if mode == 'save':
-            # file_path = filedialog.asksaveasfilename(defaultextension=".es3",
-            #                                         filetypes=[("Encrypted JSON", "*.es3"), ("All Files", "*.*")])
+            file_path = filedialog.asksaveasfilename(
+                                                    initialdir=self.game_path,
+                                                    title="Save File",
+                                                    initialfile="editable.es3",
+                                                    defaultextension=".es3",
+                                                    filetypes=[("Encrypted JSON", "*.es3"), ("All Files", "*.*")])
             if not file_path:
                 messagebox.showerror("Error", "Please select a file to save.")
                 return None
             self.save_data(file_path)
         elif mode == 'load':
-            # file_path = filedialog.askopenfilename(filetypes=[("Encrypted JSON", "*.es3"), ("All Files", "*.*")])
+            file_path = filedialog.askopenfilename(
+                                                    initialdir=self.game_path,
+                                                    title="Load File",
+                                                    initialfile="editable.es3",
+                                                    defaultextension=".es3",
+                                                    filetypes=[("Encrypted JSON", "*.es3"), ("All Files", "*.*")])
             if not file_path:
                 messagebox.showerror("Error", "Please select a file to load.")
                 return None
@@ -352,13 +351,7 @@ class GameSaveEditor(tk.Tk):
                     else:
                         self.data['dictionaryOfDictionaries']['value'].setdefault('runStats', {})[key] = val
 
-            # import winsound
-            # winsound.Beep(800, 100)
-            # winsound.Beep(500, 100)
-
             if file_path:
-                # with open(file_path, 'w', encoding='utf-8') as f:
-                #     json.dump(self.data, f, indent=2)
                 # make a backup of the file
                 if os.path.exists(file_path):
                     # check if the backup with same name exists
@@ -386,11 +379,6 @@ class GameSaveEditor(tk.Tk):
                     self.data = json.loads(decrypted.decode('utf-8'))
                     self.update_data(self.data)
                     # messagebox.showinfo("Success", "File loaded successfully.")
-                    # just make a windows loaded sound
-                    # self.bell()
-                    # import winsound
-                    # winsound.Beep(500, 100)
-                    # winsound.Beep(800, 100)
                     self.refresh_data()
             except Exception as e:
                 messagebox.showerror("Error", str(e))
@@ -414,21 +402,10 @@ class GameSaveEditor(tk.Tk):
 
     # on close, ask if user wants to save
     def on_close(self):
-        # if messagebox.askokcancel("Quit", "Do you want to save your changes?"):
-            # self.ask_save_file('save')
-        self.ask_save_file('save')
+        if messagebox.askokcancel("Quit", "Do you want to save your changes?"):
+            self.ask_save_file('save')
         self.destroy()
 
-# import gzip
-# # Utility functions
-# def is_gzip(data):
-#     return data[:2] == b'\x1f\x8b'
-
-# def decompress_gzip(data):
-#     return gzip.decompress(data)
-
-from Crypto.Cipher import AES # pip install pycryptodome
-from Crypto.Protocol.KDF import PBKDF2
 def unpad_pkcs7(data: bytes) -> bytes:
     pad_len = data[-1]
     return data[:-pad_len]
@@ -439,11 +416,6 @@ def decrypt_data(data, password):
     cipher = AES.new(key, AES.MODE_CBC, iv)
     decrypted = cipher.decrypt(data[16:])
     return unpad_pkcs7(decrypted)
-
-
-from Crypto.Cipher import AES
-from Crypto.Protocol.KDF import PBKDF2
-import os
 
 def pad_pkcs7(data: bytes, block_size: int = 16) -> bytes:
     pad_len = block_size - len(data) % block_size
@@ -460,6 +432,8 @@ def encrypt_data(data: bytes, password: str) -> bytes:
 PASSWORD = "Why would you want to cheat?... :o It's no fun. :') :'D"
 # Sample usage
 if __name__ == '__main__':
-    app = GameSaveEditor()
+    user_name = os.getlogin()
+    game_path = f"C:/Users/{user_name}/AppData/LocalLow/semiwork/Repo/saves";
+    app = GameSaveEditor(game_path) 
     app.ask_save_file('load')
     app.mainloop()
