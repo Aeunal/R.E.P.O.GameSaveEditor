@@ -213,7 +213,8 @@ class GameSaveEditor(tk.Tk):
                 item_info.get("itemsUpgradesPurchased", 0)
             ]
             for col, (label, val) in enumerate(zip(headers[2:], values), start=2):
-                entry = ttk.Entry(frame, width=10, justify='center', )
+                entry = ttk.Entry(frame, width=10, justify='center')
+                entry.configure(state='normal') 
                 entry.insert(0, str(val))
                 entry.grid(row=row, column=col, padx=1, pady=1, sticky='ew')
                 self.entries[item_name][label] = entry
@@ -228,7 +229,8 @@ class GameSaveEditor(tk.Tk):
                     self.entries[label] = {}
                     for col, key in enumerate(["item", "itemStatBattery"], start=5):
                         val = inst_vals.get(key, 0)
-                        entry = ttk.Entry(frame, width=10, justify='center', )
+                        entry = ttk.Entry(frame, width=10, justify='center')
+                        entry.configure(state='normal') 
                         entry.insert(0, str(val))
                         entry.grid(row=row, column=col, padx=1, pady=1, sticky='ew')
                         self.entries[label]["ItemID" if key == "item" else "Battery"] = entry
@@ -253,6 +255,7 @@ class GameSaveEditor(tk.Tk):
                 val = self.player_data[pid].get(key, 0)
                 tk.Label(box, text=label, bg='white').grid(row=row, column=0, sticky='w')
                 entry = ttk.Entry(box, width=10, justify='center')
+                entry.configure(state='normal') 
                 entry.insert(0, str(val))
                 entry.grid(row=row, column=1)
                 self.player_entries[pid][key] = entry
@@ -435,5 +438,4 @@ if __name__ == '__main__':
     user_name = os.getlogin()
     game_path = f"C:/Users/{user_name}/AppData/LocalLow/semiwork/Repo/saves";
     app = GameSaveEditor(game_path) 
-    app.ask_save_file('load')
     app.mainloop()

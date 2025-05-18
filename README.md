@@ -28,12 +28,21 @@ Edit inventory, item instances, and player stats visually.
 
 ## 🛠️ How to Use
 
-1. Place your decrypted `.es3` JSON or encrypted save file in the same folder.
-2. Run:
+### Approach-1: Run from the source 
+1. Run:
    ```bash
-   python game_save_editor.py
+   python repo_editor.py
+
+### Approach-2: Use the executable
+1. Download the latest release from [Releases](https://github.com/Aeunal/R.E.P.O.GameSaveEditor/releases).
+2. Extract the zip file.
+3. Run `repo_editor.exe`.
+
+To use the editor:
+1. Open the save file directory (usually located in `C:\Users\<username>\AppData\LocalLow\semiwork\R.E.P.O\save`, in which the folder will be opened automatically while loading).
+2. Select the save file you want to edit.
 3. Edit values.
-4. Press Ctrl+S to save or Ctrl+Q to quit.
+4. Press Ctrl+S to save, select where to save the edited file, and choose a name. Then press Ctrl+Q to quit.
 
 ### 🔐 Password
 The encryption key is hardcoded:

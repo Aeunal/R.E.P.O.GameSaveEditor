@@ -1,4 +1,8 @@
 venv
 deprecated
+build
+dist
+*.spec
+
 *.es3
 *.es3.bak
