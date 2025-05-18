@@ -6,6 +6,7 @@
 
 A minimalist and user-friendly GUI tool to decrypt, edit, and re-encrypt save files from the game **R.E.P.O.**  
 Edit inventory, item instances, and player stats visually.
+It works with the latest version of the game (v2022.3.21.2506) and is compatible with Windows 10/11.
 
 ---
 
