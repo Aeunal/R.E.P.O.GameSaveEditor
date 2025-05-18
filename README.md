@@ -50,4 +50,4 @@ pip install pycryptodome
 ```
 
 ## 💬 License
-MIT – Do what you want. Just don’t ruin the fun 😂
+MIT – Do what you want. Ruin the fun responsibly 😂
