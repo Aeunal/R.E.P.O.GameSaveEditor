@@ -13,8 +13,6 @@ Edit inventory, item instances, and player stats visually.
 
 - 📦 View and edit item inventory, upgrades, and instances
 - 👥 Edit player stats side-by-side
-- 🧠 Simple encryption/decryption
-- 🖼️ Built-in logo and save file preview
 
 ---
 
